@@ -21,6 +21,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { Margin } from '@mui/icons-material';
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Add Student', 'Add Teacher', 'Dashboard', 'Logout'];
 
@@ -52,9 +53,9 @@ function Navbar() {
 
 
   return (
-    <React.Fragment>
-    <AppBar position="Fixed">
-  
+    <div style={{display:"flex",backgroundColor:"green"}}>
+      
+    <AppBar position="fixed">
       <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -96,6 +97,9 @@ function Navbar() {
     </Box>
       
     </AppBar>
+
+
+
     <Drawer 
     anchor='left'
     open={isdrawer}
@@ -117,7 +121,7 @@ function Navbar() {
       </Box>
 
     </Drawer>
-    </React.Fragment>
+    </div>
   );
 }
 export default Navbar;
