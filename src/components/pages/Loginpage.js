@@ -4,9 +4,11 @@ import { FormControl,InputLabel,Input,FormHelperText,Box,TextField, Stack, Butto
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { Link, NavLink,useNavigate } from 'react-router-dom';
 import Navbar from '../headersection/Navbar';
-
+import { useDispatch } from 'react-redux';
+import { authsliceaction } from '../../Redux/auth';
 const Loginpage = () => {
 const [userdata,setuserdata]=useState({})
+const dispatch=useDispatch()
 const navigate=useNavigate()
 const submithandler=(e)=>{
   e.preventDefault()
@@ -35,8 +37,8 @@ console.log("kjbj kbc")
    }
   }).then((data)=>{
     console.log(data,"khbchjb")
-      navigate("/home")
-      
+      navigate("/inbox")
+      dispatch(authsliceaction.loginhandler())
       localStorage.setItem("id",data.idToken)
       localStorage.setItem("name",data.localId)
      localStorage.setItem("gmail",userdata.username)

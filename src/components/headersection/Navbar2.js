@@ -15,6 +15,19 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { Drawer } from '@mui/material';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import { useDispatch } from 'react-redux';
+import { Margin } from '@mui/icons-material';
+import Compose from '../pages/Compose';
+import { useNavigate } from 'react-router-dom';
+import { authsliceaction } from '../../Redux/auth';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,12 +70,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar2() {
+  const dispatch=useDispatch()
   const [anchorEl, setAnchorEl] = React.useState('');
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState('');
-
+    const[isdrawer,setisdrawer]=React.useState(false)
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  
+  
+  const navigate=useNavigate()
+  const handlemail=(text)=>{
+    
+    console.log("jhdbchdjsbc")
+    
+    if(text==="Inbox"){
+      navigate("/inbox")
+    }
+    else if(text==="Compose"){
+      navigate('/home')
+    }
+    else if(text==="Send email"){
+navigate('/sentmail')
+    }
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -75,12 +106,19 @@ export default function Navbar2() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    dispatch(authsliceaction.logouthandler())
+    localStorage.removeItem("id")
+    localStorage.removeItem("name")
+    navigate('/')
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
+  const handleOpenUserMenu = (event) => {
+      
+    setisdrawer(true)
+  };
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -99,7 +137,7 @@ export default function Navbar2() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
     </Menu>
   );
 
@@ -121,7 +159,7 @@ export default function Navbar2() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit"   >
           <Badge badgeContent={4} color="error">
             <MailIcon />
           </Badge>
@@ -165,6 +203,7 @@ export default function Navbar2() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
+            onClick={handleOpenUserMenu} 
           >
             <MenuIcon />
           </IconButton>
@@ -174,7 +213,7 @@ export default function Navbar2() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            Dmail
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -189,7 +228,10 @@ export default function Navbar2() {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
-                <MailIcon />
+                <MailIcon onClick={()=>{
+          console.log("bhcbsdch")
+              navigate('/inbox')
+            }} />
               </Badge>
             </IconButton>
             <IconButton
@@ -229,6 +271,43 @@ export default function Navbar2() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+
+      <Drawer 
+     
+    anchor='left'
+    open={isdrawer}
+   sx={{
+    backgroundColor:"blue"
+   }}
+    onClose={()=>{setisdrawer(false)}}>
+   <Box p={2} width='200px' textAlign="center" role='presentation'
+   sx={{
+    backgroundColor:"blue"
+   }}>
+   <List>
+        {['Inbox', 'Starred', 'Send email', 'Compose'].map((text, index) => (
+          <ListItem key={text} disablePadding >
+            <ListItemButton onClick={()=>handlemail(text)}>
+              <ListItemIcon >
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    
+      </Box>
+
+    </Drawer>
+
+
+
+      <div>
+        
+     
+
+      </div>
     </Box>
   );
 }
