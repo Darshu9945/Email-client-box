@@ -55,7 +55,7 @@ const Signup = () => {
 
   return (
     <div style={{minHeight:"100vh"}}>
-        <Navbar></Navbar>
+        
  <Box
       component="form"
       onSubmit={submithandler}

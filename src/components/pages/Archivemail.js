@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import CloseIcon from '@mui/icons-material/Close';
 import Navbar from '../headersection/Navbar';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { Box,Button,Container,Grid, ListItem } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import Snackbar from '@mui/material/Snackbar';
 import Tooltip from '@mui/material/Tooltip';
@@ -20,36 +20,34 @@ import { useDispatch,useSelector } from 'react-redux';
 import Icons from './Icons';
 import { maildatasliceaction } from '../../Redux/maildata';
 
-const data=[{gmail:"darshankb46@gmail.com",subject:"resunme",msg:";kmsdlknmcsdkjcnckjbsdcjb"},{gmail:"lkcnsdlkcn",subject:"resunme",msg:";kmsdlknmcsdkjcnckjbsdcjb"}]
-const Inbox = () => {
+
+const Archivemale = () => {
   const navigate=useNavigate()
-  const maildata=useSelector(state=>state.mail.maildata) 
-  const [sentadat,setsentdata]=useState(maildata)
+  const archivedata=useSelector(state=>state.mail.archivedata) 
+  console.log(archivedata,"asklm")
+  const [sentadat,setsentdata]=useState(archivedata)
+  console.log(archivedata,sentadat,"asklm")
   const searchdata=useSelector(state=>state.search.searchdata)
+ 
   useEffect(()=>{
-    console.log(maildata,"sjhgxchv")
-    setsentdata(maildata)
-  },[maildata])
+    console.log(archivedata,"lkslskncam c")
+setsentdata([...archivedata])
+  },[archivedata])
   const handleClose = (event, reason) => {
-
-
-
-
-
     if (reason === 'clickaway') {
       return;
     }
 
-   
+  
   };
 
 
-
+ 
   const dispatch=useDispatch()
   useEffect(()=>{
     const gmail=localStorage.getItem("gmail")
 const congmail=gmail.replace(/@|\.com/g, '')
-    axios.get(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${congmail}.json`)
+    axios.get(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/archive${congmail}.json`)
        .then(res=>{
        
         let kb=[]
@@ -57,22 +55,22 @@ const congmail=gmail.replace(/@|\.com/g, '')
             kb.push({...res.data[key],key:key})
         }
         setfilterdata([...kb])
-    dispatch(maildatasliceaction.addalldata([...kb]))
+    dispatch(maildatasliceaction.allarchive([...kb]))
     
         }).catch(err=>console.log(err.message))
   },[])
   const isdelte=useSelector(state=>state.mail.isdelete)
-  const isarchive=useSelector(state=>state.mail.isarchive)
   const [filterddat,setfilterdata]=useState([])
   
  useEffect(()=>{
-     let filterdata=filterddat.filter((item)=>{
+  
+     let filterdata=archivedata.filter((item)=>{
       let kb=item.email+item.subject+item.msg
       return kb.includes(searchdata)
      })
-     
+     console.log(filterdata)
      if(searchdata){
-     
+      console.log("jhsv")
       setsentdata(filterdata)
      }
  },[searchdata])
@@ -83,32 +81,30 @@ const artchievedata=()=>{
 const [state, setState] = React.useState({
   open: false,
   vertical: 'bottom',
-  horizontal: 'left',
+  horizontal: 'right',
 });
 const { vertical, horizontal, open } = state;
 
-const handleundo=(e)=>{
-console.log(e.target)
-}
-
-
-const action = (
-  <React.Fragment>
-    {/* <Button color="secondary" size="small" onClick={(e)=>{handleundo(e)}}>
-      UNDO
-    </Button> */}
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={handleClose}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  </React.Fragment>
-);
-
-
+const deleteemails=(item)=>{
+        
+    const gmail=localStorage.getItem("gmail")
+    const congmail=gmail.replace(/@|\.com/g, '')
+    
+    
+    axios.delete(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/archive${congmail}/${item.key}.json`)
+    .then(res=>{
+       
+    const data=archivedata.filter((ele)=>ele.key!==item.key)
+   
+    dispatch(maildatasliceaction.archideletedata([...data]))
+    dispatch(maildatasliceaction.isdeletehandler())
+    setTimeout(()=>{
+        dispatch(maildatasliceaction.isdeletehandler())
+    },2000)
+   
+   
+      }).catch(err=>console.log(err.message))
+  }
 
   return (
     <div>
@@ -124,9 +120,9 @@ const action = (
       
       }}>
         <div style={{marginTop:"4.1rem"}}>
-        <h1 style={{textAlign:"center",backgroundColor:"rgba(0,0,0,0.0)"}}>Inbox</h1>
+        <h1 style={{textAlign:"center",backgroundColor:"rgba(0,0,0,0.0)"}}>Archive mails</h1>
       {
-        sentadat.map((item)=>{
+       sentadat.map((item)=>{
             return  <Grid onClick={()=>{
               console.log("kb")
               navigate(`/inbox/${item}`,{state:{...item}})
@@ -155,12 +151,17 @@ const action = (
             }}> <span style={{fontWeight:"bold"}}>{item.subject}</span> -{item.msg.slice(1,100)}<span>{item.msg.length>100 && "..."}</span>
             </Grid>
            <Grid>
-           <Icons
-              items={item}
-              filterdata={filterddat}
-              ></Icons>
+           <Grid> <IconButton aria-label="delete" sx={{display:{xs:"none",md:"block"}}} onClick={(e)=>
+             { deleteemails(item)
+              
+              e.stopPropagation()}}>
+                <Tooltip title="Delete">
+                <DeleteIcon />
+                </Tooltip>
+                        </IconButton>
+                        </Grid>
            </Grid>
-           
+              
             </Grid>
            
           </Grid>
@@ -180,18 +181,9 @@ const action = (
          message is deleted succefully
         </Alert>
       </Snackbar>
-      <Snackbar
-     anchorOrigin={{ vertical, horizontal }}
-     key={vertical + horizontal}
-     open={isarchive} 
-     autoHideDuration={1000} 
-     onClose={handleClose}
-     message="Conversation archived"
-     color='green'
-     action={action}
-     >
-       
-      </Snackbar>
+
+     
+
       </div>
       
       </Box>
@@ -201,4 +193,4 @@ const action = (
   )
 }
 
-export default Inbox
+export default Archivemale

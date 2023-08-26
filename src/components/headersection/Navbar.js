@@ -1,8 +1,14 @@
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
+import { useNavigate } from 'react-router-dom';
+import { styled, alpha } from '@mui/material/styles';
+import LogoutIcon from '@mui/icons-material/Logout';
+import InputBase from '@mui/material/InputBase';
 import MuiAppBar from '@mui/material/AppBar';
+import SearchIcon from '@mui/icons-material/Search';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,6 +27,14 @@ import MailIcon from '@mui/icons-material/Mail';
 import Compose from '../pages/Compose';
 import { NavLink } from 'react-router-dom';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import Fab from '@mui/material/Fab';
+import { Avatar, Badge } from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import { useDispatch } from 'react-redux';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import EditIcon from '@mui/icons-material/Edit';
+import { authsliceaction } from '../../Redux/auth';
+import { searchsliceaction } from '../../Redux/search';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -31,7 +45,29 @@ const openedMixin = (theme) => ({
   }),
   overflowX: 'hidden',
 });
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
+  },
+}));
 
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
 const closedMixin = (theme) => ({
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
@@ -70,7 +106,21 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
 }));
-
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+}));
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     width: drawerWidth,
@@ -89,6 +139,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
+  const navigate=useNavigate()
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -99,11 +150,13 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+const dispatch=useDispatch()
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{
+      
+      }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -118,8 +171,55 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            Dmail
           </Typography>
+          <Search onChange={(e)=>{
+           
+            dispatch(searchsliceaction.filterhandler(e.target.value))
+          }}>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="error">
+                <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge badgeContent={17} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+             
+              aria-haspopup="true"
+          
+              color="inherit"
+            >
+              <Avatar sx={{
+                width:"30px",
+                height:"30px",
+                backgroundColor:"blue",
+                fontSize:"15px",
+                fontWeight:"bold"
+                
+              }}  >D</Avatar>
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -135,6 +235,7 @@ export default function MiniDrawer() {
         
           
             <ListItem  disablePadding sx={{ display: 'block' }}>
+            <NavLink to='/inbox' style={{textDecoration:"none",fontWeight:"400",color:"black"}}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -152,10 +253,11 @@ export default function MiniDrawer() {
                    <InboxIcon /> 
                 </ListItemIcon>
                 <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
-                 }} ><NavLink to='/inbox' style={{textDecoration:"none",fontWeight:"400"}}>Inbox</NavLink></ListItemText>
+                 }} >Inbox</ListItemText>
                 
               </ListItemButton>
-
+              </NavLink>
+              <NavLink to='/sentmail' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -173,10 +275,11 @@ export default function MiniDrawer() {
                    <MailIcon />
                 </ListItemIcon>
                 <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
-                 }} ><NavLink to='/sentmail' style={{textDecoration:"none",fontWeight:"400"}}>Sent Box</NavLink></ListItemText>
+                 }} >Sent Box</ListItemText>
                 
               </ListItemButton>
-
+              </NavLink>
+              <NavLink to='/compose' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -194,17 +297,11 @@ export default function MiniDrawer() {
                    <ModeEditIcon /> 
                 </ListItemIcon>
                 <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
-                 }} ><NavLink to='/compose' activeClassName="active" style={{textDecoration:"none",fontWeight:"400"}}>Compose</NavLink></ListItemText>
+                 }} >Compose</ListItemText>
                 
               </ListItemButton>
-
-            </ListItem>
-         
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+              </NavLink>
+              <NavLink to='/archive' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -219,15 +316,56 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                   <ArchiveIcon/> 
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
+                 }} >Archived mail</ListItemText>
+                
               </ListItemButton>
+              </NavLink>
             </ListItem>
-          ))}
+         
+        </List>
+        <Divider />
+        <List>
+        <ListItemButton
+        onClick={()=>{
+          console.log("kjabkhjabs")
+
+          localStorage.removeItem("name")
+          localStorage.removeItem("id")
+       dispatch(authsliceaction.logouthandler())
+      navigate('/')
+        }}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                   <LogoutIcon /> 
+                </ListItemIcon>
+                <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
+                 }} >Logout</ListItemText>
+                
+              </ListItemButton>
         </List>
       </Drawer>
-      
+      {/* <Box component='div'  sx={{
+        position:'absolute',
+       
+        bottom:"4rem",
+        right:"4rem"
+      }}> <Fab color="secondary" aria-label="edit">
+        <EditIcon />
+      </Fab></Box> */}
     </Box>
   );
 }

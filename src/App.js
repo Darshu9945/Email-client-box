@@ -15,6 +15,8 @@ import { useDispatch,useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { authsliceaction } from './Redux/auth';
 import Inboxdetail from './components/pages/Inboxdetail';
+import Sentboxdetail from './components/pages/Sentboxdetail';
+import Archivemale from './components/pages/Archivemail';
 function App() {
   const dispatch=useDispatch()
   const auth=useSelector(state=>state.auth.islogin)
@@ -25,19 +27,21 @@ if(kb){
   dispatch(authsliceaction.loginhandler())
 }
 else{
-  dispatch(authsliceaction.loginhandler())
+  dispatch(authsliceaction.logouthandler())
 }
  },[])
-
+console.log(auth)
   return (
     <Routes>
       <Route path='/' element= {auth ? <Navigate to='/inbox'/>:<Loginpage></Loginpage>}></Route>
       <Route path='/signup' element={<Signup></Signup>}></Route>
       <Route path='/compose' element={<Compose></Compose>}></Route>
-      <Route path='/inbox' element={!auth ? <Navigate to='/inbox'/>:<Inbox12></Inbox12>}></Route>
+      <Route path='/inbox' element={!auth ? <Navigate to='/'/>:<Inbox12></Inbox12>}></Route>
       <Route path='/sentmail' element={<Sentmail></Sentmail>}></Route>
       <Route path='*' element={auth ? <Navigate to='/inbox'/>:<Loginpage></Loginpage>}></Route>
       <Route path='/inbox/:id' element={<Inboxdetail></Inboxdetail>}></Route>
+      <Route path='/sentmail/:id' element={<Sentboxdetail></Sentboxdetail>}></Route>
+      <Route path='/archive' element={<Archivemale></Archivemale>}></Route>
     </Routes>
   );
 }

@@ -55,7 +55,7 @@ console.log("kjbj kbc")
 }
   return (
     <div style={{minHeight:"100vh"}}>
-      <Navbar></Navbar>
+      
  <Box
       component="form"
       onSubmit={submithandler}

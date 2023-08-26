@@ -8,6 +8,7 @@ const authSlice=createSlice({
             state.islogin=true
         },
         logouthandler(state){
+            console.log(state.islogin)
             state.islogin=false
         }
     }

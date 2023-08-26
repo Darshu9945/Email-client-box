@@ -5,7 +5,7 @@ import { Avatar, Box, Container, Stack, Typography,Button } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import Fab from '@mui/material/Fab';
-const Inboxdetail = () => {
+const Sentboxdetail = () => {
     const {id}=useParams()
     const location=useLocation()
    
@@ -85,4 +85,4 @@ padding:'1rem 5rem'
   )
 }
 
-export default Inboxdetail
+export default Sentboxdetail

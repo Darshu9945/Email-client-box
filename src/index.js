@@ -9,7 +9,7 @@ import store from './Redux/store';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-  <div style={{backgroundColor:"rgba(0,0,0,0.1)",minHeight:"100vh"}}>
+  <div style={{backgroundColor:"white",minHeight:"100vh"}}>
     <Provider store={store}>
     <App />
     </Provider>

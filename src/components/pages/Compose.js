@@ -29,9 +29,11 @@ const cleanedEmail = sentdata.email.replace(/@|\.com/g, '');
 axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${cleanedEmail}.json`,{...sentdata,email:gmail})
 .then(res=>res).catch(err=>console.log(err.message))
 
+
 const congmail=gmail.replace(/@|\.com/g, '')
 axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}.json`,{...sentdata})
 .then(res=> navigate('/inbox')).catch(err=>console.log(err.message))
+
 }
 
   return (
