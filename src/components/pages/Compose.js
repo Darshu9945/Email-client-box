@@ -26,12 +26,12 @@ e.preventDefault()
 console.log("dcjbnckjb")
 const gmail=localStorage.getItem("gmail")
 const cleanedEmail = sentdata.email.replace(/@|\.com/g, '');
-axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${cleanedEmail}.json`,{...sentdata,email:gmail})
+axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${cleanedEmail}.json`,{...sentdata,email:gmail,isseen:false})
 .then(res=>res).catch(err=>console.log(err.message))
 
 
 const congmail=gmail.replace(/@|\.com/g, '')
-axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}.json`,{...sentdata})
+axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}.json`,{...sentdata,isseen:false})
 .then(res=> navigate('/inbox')).catch(err=>console.log(err.message))
 
 }

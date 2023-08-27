@@ -30,11 +30,12 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Fab from '@mui/material/Fab';
 import { Avatar, Badge } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { useDispatch } from 'react-redux';
+
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EditIcon from '@mui/icons-material/Edit';
 import { authsliceaction } from '../../Redux/auth';
 import { searchsliceaction } from '../../Redux/search';
+import { useDispatch,useSelector } from 'react-redux';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -142,7 +143,18 @@ export default function MiniDrawer() {
   const navigate=useNavigate()
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const maildata=useSelector(state=>state.mail.maildata) 
+  const [count,setcount]=React.useState(0)
+ React.useEffect(()=>{
+  let kb=0
+maildata.map((item)=>{
 
+  if(!item.isseen){
+  kb++
+  }
+  setcount(kb)
+})
+ },[maildata])
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -151,6 +163,7 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 const dispatch=useDispatch()
+const k=localStorage.getItem("gmail").slice(0,1)
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -188,7 +201,7 @@ const dispatch=useDispatch()
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={count} color="error">
                 <MailIcon />
               </Badge>
             </IconButton>
@@ -217,7 +230,7 @@ const dispatch=useDispatch()
                 fontSize:"15px",
                 fontWeight:"bold"
                 
-              }}  >D</Avatar>
+              }}  >{k.toUpperCase()}</Avatar>
             </IconButton>
           </Box>
         </Toolbar>

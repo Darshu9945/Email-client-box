@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { authsliceaction } from '../../Redux/auth';
 const Loginpage = () => {
 const [userdata,setuserdata]=useState({})
+const [message,setmessage]=useState('')
 const dispatch=useDispatch()
 const navigate=useNavigate()
 const submithandler=(e)=>{
@@ -49,6 +50,7 @@ console.log("kjbj kbc")
 
 
       }).catch((err)=>{
+        setmessage(err.message)
    console.log(err.message)
  })
 
@@ -72,6 +74,7 @@ console.log("kjbj kbc")
      
       autoComplete="off"
     >
+    
         <Stack gap={2} width={100}sx={
             {
                 
@@ -83,7 +86,9 @@ console.log("kjbj kbc")
                 
             }
         }>  
+          
        <section style={{textAlign:"center"}}><AccountCircleRoundedIcon color='primary' fontSize='large' /></section> 
+       {!!message && <p style={{color:"red"}}>{message}</p>}
         <TextField id="outlined-basic" label="Username" type='emial' variant="outlined" required
         onChange={(e)=>{
 setuserdata({...userdata,username:e.target.value})
@@ -95,7 +100,7 @@ setuserdata({...userdata,username:e.target.value})
         }}
         />
         
-
+     
         <NavLink  style={{
           textDecoration:"none",
           marginTop:"-0.5rem",

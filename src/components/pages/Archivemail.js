@@ -173,7 +173,7 @@ const deleteemails=(item)=>{
    
      <Snackbar
      anchorOrigin={{ vertical, horizontal }}
-     key={vertical + horizontal}
+   
      open={isdelte} 
      autoHideDuration={6000} 
      onClose={handleClose}>

@@ -76,8 +76,7 @@ kb.push({...res.data[key],key:key})
             <Grid container item xs={12} md={9} justifyContent='space-between'>
               <Grid paddingTop='7px'> <span style={{fontWeight:"bold"}}>{item.subject}</span> -{item.msg.slice(1,100)}<span>{item.msg.length>100 && "..."}</span></Grid>
               
-              <Icons></Icons>
-              
+      
             </Grid>
            
           </Grid>

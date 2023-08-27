@@ -16,7 +16,7 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch,useSelector } from 'react-redux';
 import { maildatasliceaction } from '../../Redux/maildata';
 
-const Icons = (props) => {
+const Iconsforsent = (props) => {
 const dispatch=useDispatch()
     const deleteemails=(item)=>{
         
@@ -122,4 +122,4 @@ const congmail=gmail.replace(/@|\.com/g, '')
   )
 }
 
-export default Icons
+export default Iconsforsent

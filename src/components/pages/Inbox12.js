@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../headersection/Navbar';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import MarkunreadIcon from '@mui/icons-material/Markunread';
 import { Box,Button,Container,Grid, ListItem } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -24,6 +25,7 @@ const data=[{gmail:"darshankb46@gmail.com",subject:"resunme",msg:";kmsdlknmcsdkj
 const Inbox = () => {
   const navigate=useNavigate()
   const maildata=useSelector(state=>state.mail.maildata) 
+ 
   const [sentadat,setsentdata]=useState(maildata)
   const searchdata=useSelector(state=>state.search.searchdata)
   useEffect(()=>{
@@ -108,7 +110,20 @@ const action = (
   </React.Fragment>
 );
 
-
+const isseenhandler=(item)=>{
+const changeddata={...item,isseen:true}
+const gmail=localStorage.getItem("gmail")
+const congmail=gmail.replace(/@|\.com/g, '')
+    axios.put(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${congmail}/${item.key}.json`,changeddata)
+       .then(res=>{
+       
+        const findindex=maildata.findIndex(i=>i.key===item.key)
+        const addeddata=[...maildata]
+        addeddata[findindex]=changeddata
+        dispatch(maildatasliceaction.addalldata(addeddata))
+        console.log(addeddata,"i am kb")
+        }).catch(err=>console.log(err.message))
+}
 
   return (
     <div>
@@ -128,20 +143,21 @@ const action = (
       {
         sentadat.map((item)=>{
             return  <Grid onClick={()=>{
-              console.log("kb")
+                  isseenhandler(item)
               navigate(`/inbox/${item}`,{state:{...item}})
             }} key={item.subject} container 
             boxShadow='0px 2px 6px rgba(0,0,0,0.1)' 
             padding='0.2rem 01rem 0.2rem 01rem' 
             sx={{
               flexDirection:{xs:"column", md:"row" },
+              backgroundColor:item.isseen ? "":"rgba(0,0,0,0.1)",
               '&:hover':{
                 boxShadow:'0px 2px 8px rgba(0,0,0,0.8)' 
                   }
             }}   
            >
              
-            <Grid  item xs={3}  fontWeight="bold" >
+            <Grid  item xs={3}  style={{fontWeight:!item.isseen?"bold":""}} >
               
              <ListItem > <StarBorderIcon fontSize='25px'sx={{
               marginRight:"0.6rem"
@@ -152,7 +168,7 @@ const action = (
               paddingLeft:{xs:"3rem",xl:"0rem"},
                 paddingTop:{xs:'0px',md:"10px"},
                 cursor:"pointer"
-            }}> <span style={{fontWeight:"bold"}}>{item.subject}</span> -{item.msg.slice(1,100)}<span>{item.msg.length>100 && "..."}</span>
+            }}> <span style={{fontWeight:!item.isseen?"bold":""}}>{item.subject}</span> -{item.msg.slice(1,100)}<span>{item.msg.length>100 && "..."}</span>
             </Grid>
            <Grid>
            <Icons
@@ -172,7 +188,7 @@ const action = (
    
      <Snackbar
      anchorOrigin={{ vertical, horizontal }}
-     key={vertical + horizontal}
+   
      open={isdelte} 
      autoHideDuration={6000} 
      onClose={handleClose}>
@@ -182,7 +198,7 @@ const action = (
       </Snackbar>
       <Snackbar
      anchorOrigin={{ vertical, horizontal }}
-     key={vertical + horizontal}
+     
      open={isarchive} 
      autoHideDuration={1000} 
      onClose={handleClose}
