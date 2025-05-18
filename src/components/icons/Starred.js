@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import axios from 'axios';
-import { FaStar } from 'react-icons/fa'
+// import { FaStar } from 'react-icons/fa'
 import { Tooltip } from '@mui/material';
 import { useDispatch,useSelector } from 'react-redux';
 import { starredsliceaction } from '../../Redux/starreddata';
@@ -60,11 +60,7 @@ const congmail=gmail.replace(/@|\.com/g, '')
         marginTop:"0.4rem"
     }}>
         
-      <FaStar  color={props.isstarred ? 'green' :"gray"}
-      style={{
-        
-      }}
-      ></FaStar>
+    
      
     </div>
     </Tooltip>
