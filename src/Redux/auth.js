@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-const initialState ={islogin:"false"}
+const initialState ={islogin:"false",userdata:''}
 const authSlice=createSlice({
     name:"auth",
     initialState,
@@ -10,6 +10,9 @@ const authSlice=createSlice({
         logouthandler(state){
             console.log(state.islogin)
             state.islogin=false
+        },
+        userdatahandler(state,action){
+          state.userdata=action.payload
         }
     }
 

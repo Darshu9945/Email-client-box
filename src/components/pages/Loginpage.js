@@ -6,6 +6,8 @@ import { Link, NavLink,useNavigate } from 'react-router-dom';
 import Navbar from '../headersection/Navbar';
 import { useDispatch } from 'react-redux';
 import { authsliceaction } from '../../Redux/auth';
+import { profilesliceaction } from '../../Redux/isprofiledata';
+import axios from 'axios';
 const Loginpage = () => {
 const [userdata,setuserdata]=useState({})
 const [message,setmessage]=useState('')
@@ -38,17 +40,22 @@ console.log("kjbj kbc")
    }
   }).then((data)=>{
     console.log(data,"khbchjb")
-      navigate("/inbox")
+      
       dispatch(authsliceaction.loginhandler())
       localStorage.setItem("id",data.idToken)
       localStorage.setItem("name",data.localId)
      localStorage.setItem("gmail",userdata.username)
-     localStorage.setItem("profiledata",JSON.stringify({name:"---",gender:"---",date:"---",number:"---"}))
-      localStorage.setItem("valid",'login')
-
-
-
-
+     axios.get(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/user${data.localId}.json`)
+     .then(res=>{
+      
+       let col=[]
+       for (let key in res.data){
+   col.push(res.data[key])
+       }
+       console.log(col,"col")
+      dispatch(profilesliceaction.addprofiledata([...col]))})
+      navigate("/inbox")
+     .catch(err=>console.log(err.message))
       }).catch((err)=>{
         setmessage(err.message)
    console.log(err.message)
@@ -78,7 +85,7 @@ console.log("kjbj kbc")
         <Stack gap={2} width={100}sx={
             {
                 
-                width:"25%",
+                width:{xs:"80%",md:"25%"},
                 padding:"2rem",
                 boxShadow:"0px 2px 8px rgba(0,0,0,0.1)",
                 borderRadius:"12px",

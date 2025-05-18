@@ -4,7 +4,7 @@ import Navbar from './components/headersection/Navbar';
 import Loginpage from './components/pages/Loginpage';
 import Navbar2 from './components/headersection/Navbar2';
 import { Navigate } from 'react-router-dom';
-
+import axios from 'axios';
 import { Routes,Route } from 'react-router-dom';
 import Signup from './components/pages/Signup';
 import { Inbox } from '@mui/icons-material';
@@ -17,6 +17,8 @@ import { authsliceaction } from './Redux/auth';
 import Inboxdetail from './components/pages/Inboxdetail';
 import Sentboxdetail from './components/pages/Sentboxdetail';
 import Archivemale from './components/pages/Archivemail';
+import { profilesliceaction } from './Redux/isprofiledata';
+import Starredmsg from './components/pages/Starredmsg';
 function App() {
   const dispatch=useDispatch()
   const auth=useSelector(state=>state.auth.islogin)
@@ -30,7 +32,10 @@ else{
   dispatch(authsliceaction.logouthandler())
 }
  },[])
-console.log(auth)
+
+
+
+
   return (
     <Routes>
       <Route path='/' element= {auth ? <Navigate to='/inbox'/>:<Loginpage></Loginpage>}></Route>
@@ -42,6 +47,7 @@ console.log(auth)
       <Route path='/inbox/:id' element={<Inboxdetail></Inboxdetail>}></Route>
       <Route path='/sentmail/:id' element={<Sentboxdetail></Sentboxdetail>}></Route>
       <Route path='/archive' element={<Archivemale></Archivemale>}></Route>
+      <Route path='/starred' element={<Starredmsg></Starredmsg>}></Route>
     </Routes>
   );
 }

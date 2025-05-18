@@ -15,8 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { useDispatch,useSelector } from 'react-redux';
 import { maildatasliceaction } from '../../Redux/maildata';
+import Timigs from '../icons/Timigs';
 
 const Icons = (props) => {
+  const navigate=useNavigate()
 const dispatch=useDispatch()
     const deleteemails=(item)=>{
         
@@ -24,18 +26,20 @@ const dispatch=useDispatch()
         const congmail=gmail.replace(/@|\.com/g, '')
         
         
-        axios.delete(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${congmail}/${item.key}.json`)
+        axios.delete(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/${props.type}${congmail}/${item.key}.json`)
         .then(res=>{
            
         const data=props.filterdata.filter((ele)=>ele.key!==item.key)
         console.log(item)
         console.log(data,"datatata")
-        dispatch(maildatasliceaction.deletedata([...data]))
-        dispatch(maildatasliceaction.isdeletehandler())
+        dispatch(props.action.deletedata([...data]))
+        dispatch(props.action.isdeletehandler())
         setTimeout(()=>{
             dispatch(maildatasliceaction.isdeletehandler())
         },2000)
-       
+       if(props.det){
+        navigate(-1)
+       }
        
           }).catch(err=>console.log(err.message))
       }
@@ -43,7 +47,9 @@ const dispatch=useDispatch()
 console.log("archive button presed")
         const gmail=localStorage.getItem("gmail")
         const congmail=gmail.replace(/@|\.com/g, '')
-        
+        if(props.det){
+          navigate(-1)
+         }
         
         axios.delete(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${congmail}/${item.key}.json`)
         .then(res=>{
@@ -63,61 +69,82 @@ console.log("archive button presed")
 
       }
       const maildata=useSelector(state=>state.mail.maildata) 
-      const readhandler=(item)=>{
+const readhandler=(item)=>{
         
 const gmail=localStorage.getItem("gmail")
+
 const congmail=gmail.replace(/@|\.com/g, '')
-    axios.put(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${congmail}/${item.key}.json`,{...item,isseen:!item.isseen})
-       .then(res=>{
-        const changeddata={...item,isseen:!item.isseen}
-        const findindex=maildata.findIndex(i=>i.key===item.key)
-        const addeddata=[...maildata]
+const changeddata={...item,isseen:!item.isseen}
+        const findindex=props.alldata.findIndex(i=>i.key===item.key)
+        const addeddata=[...props.alldata]
         addeddata[findindex]=changeddata
-        dispatch(maildatasliceaction.addalldata(addeddata))
-        console.log(addeddata,"i am kb")
+        dispatch(props.action.addalldata(addeddata))
+        if(props.det){
+          navigate(-1)
+         }
+    axios.put(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/${props.type}${congmail}/${item.key}.json`,{...item,isseen:!item.isseen})
+       .then(res=>{
+        
         }).catch(err=>console.log(err.message))
       }
-     
+     console.log(props.items)
   return (
     <div>
-      <Grid item
-              sx={{
-                display:"flex"
-              }} > 
-                        <Grid>
-                            
-                            <IconButton aria-label="delete" sx={{display:{xs:"none",md:"block"}}} 
-                            onClick={(e)=>
-                           { artchievedata(props.items)
-              
-              e.stopPropagation()}}>
-                <Tooltip title="Archive"> 
-                <ArchiveIcon/>
-                </Tooltip>
-                        </IconButton>
-                      
-                        </Grid>
-                        <Grid> <IconButton aria-label="delete" sx={{display:{xs:"none",md:"block"}}} onClick={(e)=>
-             { deleteemails(props.items)
-              
-              e.stopPropagation()}}>
-                <Tooltip title="Delete">
-                <DeleteIcon />
-                </Tooltip>
-                        </IconButton>
-                        </Grid>
-                        <Grid> <IconButton aria-label="delete" sx={{display:{xs:"none",md:"block"}}} onClick={(e)=>
-             { readhandler(props.items)
-              
-              e.stopPropagation()}}>
-                
-               {props.items.isseen ? <Tooltip title="Mark as read"><MailOutlineIcon /> </Tooltip>:<Tooltip title="Mark as unread"><MarkunreadIcon/></Tooltip>}
-               
-                        </IconButton>
-                        
-                        </Grid>
-                        
-              </Grid>
+      
+  <Grid item sx={{ display: 'flex' ,paddingRight:"1rem"}}>
+    
+    <div
+        style={{
+          marginTop:"0.5rem"
+        }}
+         
+          onClick={(e) => {
+            artchievedata(props.items);
+            e.stopPropagation();
+          }}
+        >
+          <Timigs date={props.items.date}></Timigs>
+        </div>
+      <Tooltip title="Archive">
+        <IconButton
+        disabled={props.type==="sent"}
+          aria-label="archive"
+         
+          onClick={(e) => {
+            artchievedata(props.items);
+            e.stopPropagation();
+          }}
+        >
+          <ArchiveIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title="Delete">
+        <IconButton
+          aria-label="delete"
+         
+          onClick={(e) => {
+            deleteemails(props.items);
+            e.stopPropagation();
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title={props.items.isseen ? 'Mark as unread' : 'Mark as read'}>
+        <IconButton
+          aria-label="mark-as-read-unread"
+         
+          onClick={(e) => {
+            readhandler(props.items);
+            e.stopPropagation();
+          }}
+        >
+          {props.items.isseen ? <MailOutlineIcon /> : <MarkunreadIcon />}
+        </IconButton>
+      </Tooltip>
+    </Grid>
     </div>
   )
 }

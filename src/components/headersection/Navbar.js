@@ -1,6 +1,8 @@
 import * as React from 'react';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import { useTheme } from '@mui/material/styles';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import { useNavigate } from 'react-router-dom';
@@ -30,12 +32,15 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Fab from '@mui/material/Fab';
 import { Avatar, Badge } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-
+import MoreIcon from '@mui/icons-material/MoreVert';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import EditIcon from '@mui/icons-material/Edit';
 import { authsliceaction } from '../../Redux/auth';
 import { searchsliceaction } from '../../Redux/search';
+import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
 import { useDispatch,useSelector } from 'react-redux';
+import Profile from '../pages/Profile';
+import { profilesliceaction } from '../../Redux/isprofiledata';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -139,6 +144,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+
+
+
 export default function MiniDrawer() {
   const navigate=useNavigate()
   const theme = useTheme();
@@ -163,58 +171,96 @@ maildata.map((item)=>{
     setOpen(false);
   };
 const dispatch=useDispatch()
-const k=localStorage.getItem("gmail").slice(0,1)
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{
-      
-      }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Dmail
-          </Typography>
-          <Search onChange={(e)=>{
-           
-            dispatch(searchsliceaction.filterhandler(e.target.value))
-          }}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={count} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
+let k=''
+const k1=localStorage.getItem("gmail")
+if(k1){
+k=k1.slice(0,1)
+}
+
+
+const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const menuId = 'primary-search-account-menu';
+const renderMenu = (
+  <Menu
+    anchorEl={anchorEl}
+    anchorOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    id={menuId}
+    keepMounted
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    open={isMenuOpen}
+    onClose={handleMenuClose}
+  >
+    <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+    <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+  </Menu>
+);
+const renderMobileMenu = (
+  <Menu
+    anchorEl={mobileMoreAnchorEl}
+    anchorOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    id={mobileMenuId}
+    keepMounted
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    open={isMobileMenuOpen}
+    onClose={handleMobileMenuClose}
+  >
+    <MenuItem>
+      <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+        <Badge badgeContent={count} color="error">
+          <MailIcon />
+        </Badge>
+      </IconButton>
+      <p>Messages</p>
+    </MenuItem>
+    <MenuItem>
+      <IconButton
+        size="large"
+        aria-label="show 17 new notifications"
+        color="inherit"
+      >
+        <Badge badgeContent={0} color="error">
+          <NotificationsIcon />
+        </Badge>
+      </IconButton>
+      <p>Notifications</p>
+    </MenuItem>
+    <MenuItem onClick={()=>{
+                dispatch(profilesliceaction.isprofilehandler())
+              }}>
+    <IconButton
               size="large"
               edge="end"
               aria-label="account of current user"
@@ -228,13 +274,112 @@ const k=localStorage.getItem("gmail").slice(0,1)
                 height:"30px",
                 backgroundColor:"blue",
                 fontSize:"15px",
+                fontWeight:"bold",
+                marginRight:"0.6rem"
+                
+              }}  >{k.toUpperCase()}</Avatar>
+            </IconButton>
+      <p>Profile</p>
+    </MenuItem>
+  </Menu>
+);
+const [isopen,setisopen]=React.useState(false)
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="fixed" open={open} sx={{
+      
+      }}>
+        <Toolbar>
+          
+
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+              ...(open && { display: 'none' }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div"
+          sx={{ display: { xs: 'none', sm: 'block' } }}>
+            Dmail
+          </Typography>
+          <Search onChange={(e)=>{
+            dispatch(searchsliceaction.filterhandler(e.target.value))
+          }}>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+          <Box sx={{ flexGrow: 1 }} />
+          <Toolbar sx={{ display: { xs: 'none', md: 'flex',backgroundColor:"black" } }}>
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={()=>{
+              navigate('/')
+            }}>
+              <Badge badgeContent={count} color="error">
+                <MailIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge badgeContent={0} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+             
+              aria-haspopup="true"
+          
+              color="inherit"
+              onClick={()=>{
+                dispatch(profilesliceaction.isprofilehandler())
+              }}
+            >
+              <Avatar sx={{
+                width:"30px",
+                height:"30px",
+                backgroundColor:"blue",
+                fontSize:"15px",
                 fontWeight:"bold"
                 
               }}  >{k.toUpperCase()}</Avatar>
             </IconButton>
+          </Toolbar>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <Badge badgeContent={count} color="error">
+              <MoreIcon />
+              </Badge>
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
+      </Box>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           
@@ -248,7 +393,40 @@ const k=localStorage.getItem("gmail").slice(0,1)
         
           
             <ListItem  disablePadding sx={{ display: 'block' }}>
-            <NavLink to='/inbox' style={{textDecoration:"none",fontWeight:"400",color:"black"}}>
+            <NavLink to='/compose' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
+              <div style={{
+                padding:"0rem 0.8rem"
+              }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  backgroundColor:"rgba(0,0,0,0.3)",
+                  borderRadius:"12px"
+
+                }}
+              >
+                
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    
+                  }}
+                >
+                   <ModeEditIcon /> 
+                </ListItemIcon>
+                <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
+                 }} >Compose</ListItemText>
+             
+              </ListItemButton>
+              </div>
+              </NavLink>
+              
+            <NavLink to='/inbox' style={{textDecoration:"none",fontWeight:"400",color:"black"}} activeClassName='active'>
+            <div>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -269,6 +447,7 @@ const k=localStorage.getItem("gmail").slice(0,1)
                  }} >Inbox</ListItemText>
                 
               </ListItemButton>
+              </div>
               </NavLink>
               <NavLink to='/sentmail' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
               <ListItemButton
@@ -292,7 +471,8 @@ const k=localStorage.getItem("gmail").slice(0,1)
                 
               </ListItemButton>
               </NavLink>
-              <NavLink to='/compose' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
+             
+              <NavLink to='/starred' style={{textDecoration:"none",fontWeight:"400",color:"black"}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -307,10 +487,10 @@ const k=localStorage.getItem("gmail").slice(0,1)
                     justifyContent: 'center',
                   }}
                 >
-                   <ModeEditIcon /> 
+                   <StarBorderPurple500Icon/> 
                 </ListItemIcon>
                 <ListItemText className='listitem'  sx={{ opacity: open ? 1 : 0,
-                 }} >Compose</ListItemText>
+                 }} >Starred</ListItemText>
                 
               </ListItemButton>
               </NavLink>
@@ -347,6 +527,7 @@ const k=localStorage.getItem("gmail").slice(0,1)
 
           localStorage.removeItem("name")
           localStorage.removeItem("id")
+          localStorage.removeItem("gmail")
        dispatch(authsliceaction.logouthandler())
       navigate('/')
         }}
@@ -379,6 +560,8 @@ const k=localStorage.getItem("gmail").slice(0,1)
       }}> <Fab color="secondary" aria-label="edit">
         <EditIcon />
       </Fab></Box> */}
+      <Profile ></Profile>
     </Box>
   );
 }
+

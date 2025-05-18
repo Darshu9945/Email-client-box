@@ -22,16 +22,17 @@ const[sentdata,setsentdata]=useState({})
 
 const navigate=useNavigate()
 const submithandler=(e)=>{
+  const submissionTime = new Date()
 e.preventDefault()
 console.log("dcjbnckjb")
 const gmail=localStorage.getItem("gmail")
 const cleanedEmail = sentdata.email.replace(/@|\.com/g, '');
-axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${cleanedEmail}.json`,{...sentdata,email:gmail,isseen:false})
+axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/get${cleanedEmail}.json`,{...sentdata,email:gmail,isseen:false,date:submissionTime})
 .then(res=>res).catch(err=>console.log(err.message))
 
 
 const congmail=gmail.replace(/@|\.com/g, '')
-axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}.json`,{...sentdata,isseen:false})
+axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}.json`,{...sentdata,isseen:true,date:submissionTime})
 .then(res=> navigate('/inbox')).catch(err=>console.log(err.message))
 
 }
@@ -39,9 +40,13 @@ axios.post(`https://gurugaandu-8c45a-default-rtdb.firebaseio.com/sent${congmail}
   return (
     <React.Fragment>
         <Box sx={{ display: 'flex' }}>
+          <Box sx={{
+            display:{xs:'none',md:"block"}
+          }}>
           <Navbar></Navbar>
+          </Box>
           <Box component="main" sx={{ flexGrow: 1,  }}>
-    <div style={{width:"50%",margin:"auto"}}>
+    <div style={{maxWidth:"50rem",width:'95%',margin:"auto"}}>
         <h3 style={{textAlign:"center"}}>New Messages</h3>
        <Box sx={{ '& > :not(style)': { m: 1 },
        backgroundColor:"white",

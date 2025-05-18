@@ -125,7 +125,7 @@ const deleteemails=(item)=>{
        sentadat.map((item)=>{
             return  <Grid onClick={()=>{
               console.log("kb")
-              navigate(`/inbox/${item}`,{state:{...item}})
+              navigate(`/inbox/${item}`,{state:{state:{a:[archivedata,filterddat,item]}}})
             }} key={item.subject} container 
             boxShadow='0px 2px 6px rgba(0,0,0,0.1)' 
             padding='0.2rem 01rem 0.2rem 01rem' 
